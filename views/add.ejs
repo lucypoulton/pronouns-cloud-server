@@ -1,0 +1,97 @@
+<style>
+    input {
+        background-color: transparent;
+        border: none;
+        border-bottom: 1px solid var(--colour-light);
+        width: 5em;
+        color: white;
+        text-align: center;
+        font-size: 1.1em;
+    }
+    input.invalid {
+        border: 1px solid var(--colour-red);
+        border-radius: 5px;
+    }
+    input:focus-visible {
+        outline: unset;
+    }
+    input[type=text]:disabled {
+        border-color: var(--colour-light-grey);
+        color: var(--colour-light-grey)
+    }
+</style>
+
+<div class="flowbox" style="flex-direction: column">
+    <div>
+        <h2>Add your pronouns</h2>
+        <span>Don't see your pronouns in the list? Add them here!</span>
+        <h3>Complete the sentences:</h3>
+    </div>
+    <div>
+        <input id="input-sub" type="text" placeholder="They"> will do it if you ask nicely.
+    </div>
+    <div>I'd really love to get to know <input id="input-obj" type="text" placeholder="them">.</div>
+    <div><input id="input-prog" type="text" placeholder="They're"> a very cool person.</div>
+    <div>I hope <input id="input-posAdj" type="text" placeholder="their"> day is going well.</div>
+    <div>Whose is that? Oh, it's <input id="input-posPro" type="text" placeholder="theirs">.</div>
+    <div>This person should be really proud of <input id="input-ref" type="text" placeholder="themself">.</div>
+    <div style="margin-top: 2em">
+        <code>/pronouns set <span class="pronouns"></span></code>
+    </div>
+    <div><button id="submitButton" onclick="addPage.submit()" class="large">Submit</button></div>
+</div>
+<script>
+    const addPage = {
+        pronouns: ["sub", "obj", "prog", "posAdj", "posPro", "ref"],
+        getString: function () {
+            return this.pronouns.map(pn => document.getElementById(`input-${pn}`).value.toLowerCase()).join("/")
+        },
+        updateDom: function () {
+            for (let el of document.querySelectorAll(".pronouns")) {
+                el.innerHTML = addPage.getString();
+            }
+        },
+        init: function() {
+            for (let pn of this.pronouns) {
+                document.getElementById(`input-${pn}`).addEventListener("input", this.updateDom)
+            }
+        },
+        submit: function () {
+            let cont = true;
+            for (let el of this.pronouns.map(pn => document.getElementById(`input-${pn}`))) {
+                if (el.value === "") {
+                    el.classList.add("invalid");
+                    cont = false;
+                } else {
+                    el.classList.remove("invalid")
+                }
+            }
+            if (!cont) {
+                return;
+            }
+            for (let input of document.querySelectorAll("input")) input.disabled = true;
+
+            document.getElementById("submitButton").innerText = "Submitting..."
+
+            fetch("/api", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    set: this.getString(),
+                    source: "ProNouns Cloud<% if (locals.user) { %><%=` (username ${locals.user.username})`%><% } %>"
+                })
+            })
+            .then(response => response.json())
+            .then(json => {
+                if (json.error) {
+                    alert(`There was an error.\n\n${json.error}\n\nSorry about that!`)
+                } else {
+                    alert("Thank you for submitting your pronouns!\n\nThey've been added to the moderation queue, " +
+                        "so it might take a while before they appear in the list.");
+                    window.location = "/";
+                }
+            })
+        }
+    }
+    addPage.init();
+</script>

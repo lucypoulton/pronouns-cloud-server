@@ -39,6 +39,6 @@ module.exports = function (app) {
                 [req.body.set, new Date(), req.body.source]);
         }
         conn.release();
-        res.status(204).send();
+        res.json({}).send();
     })
 }

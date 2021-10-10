@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= locals.title ?? "ProNouns Cloud" %></title>
+    <link rel='stylesheet' href='/css/style.css'/>
+</head>
+<body class="bg-dark">
+<div class="header">
+    <span>ProNouns Cloud</span>
+    <% if (locals.user) { %>
+        <span class="username">Logged in as <%= locals.user.username%></span>
+    <% } %>
+    </div>
+<%- body %>
+</body>
+</html>

@@ -1,0 +1,45 @@
+@import url("https://branding.lucyy.me/lucy.css");
+
+* {
+  --gradient: linear-gradient(135deg, var(--colour-dark-blue), var(--colour-dark-purple));
+}
+
+.header {
+  background: var(--gradient);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.large {
+  font-size: 1.2em;
+}
+
+.parent > div {
+  margin: 1em;
+  padding: 1em;
+  text-align: center;
+}
+
+.header .username {
+  float: right;
+  font-size: 0.6em;
+}
+
+button {
+  border-radius: 5px;
+  border: none;
+  font-family: inherit;
+  font-size: 1em;
+  padding: 0.2em 1em;
+  margin: 0.5em;
+  width: 7em;
+  background: var(--gradient);
+  color: white;
+}
+
+.negative {
+  background: var(--colour-light-grey);
+  color: var(--colour-dark);
+}

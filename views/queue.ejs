@@ -1,0 +1,27 @@
+<%
+const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const formatDate = (date) =>
+        `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}, ${date.getUTCHours()}:${date.getUTCMinutes().toString().padStart(2, "0")}`
+%>
+
+<style>
+    .parent {
+        font-size: 1.2em;
+    }
+</style>
+
+<h2>Moderation Queue</h2>
+<% if (entries.length === 0) { %>
+    <h2>No entries</h2>
+<% } else { %>
+<div class="parent">
+    <% for (let entry of entries) { %>
+        <div>
+            <div class="large"><%= entry.setName %></div>
+            <div><%= formatDate(entry.time) %> from <%= entry.source %></div>
+            <button>Approve</button>
+            <button class="negative">Reject</button>
+        </div>
+    <% } %>
+</div>
+<% } %>

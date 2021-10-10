@@ -14,14 +14,35 @@ const formatDate = (date) =>
 <% if (entries.length === 0) { %>
     <h2>No entries</h2>
 <% } else { %>
-<div class="parent">
-    <% for (let entry of entries) { %>
-        <div>
-            <div class="large"><%= entry.setName %></div>
-            <div><%= formatDate(entry.time) %> from <%= entry.source %></div>
-            <button>Approve</button>
-            <button class="negative">Reject</button>
-        </div>
-    <% } %>
-</div>
+    <div class="parent">
+        <% for (let entry of entries) { %>
+            <div id="queue-set-<%=entry.setName%>">
+                <div class="large"><%= entry.setName %></div>
+                <div><%= formatDate(entry.time) %> from <%= entry.source %></div>
+                <button onclick="modQueue.approve(<%= '"' + entry.setName + '"'%>)">Approve</button>
+                <button onclick="modQueue.reject(<%= '"' + entry.setName + '"'%>)" class="negative">Reject</button>
+            </div>
+        <% } %>
+    </div>
 <% } %>
+<script>
+    const modQueue = {
+        act: function (set, action) {
+            fetch("/moderation", {
+                method: "POST",
+                body: JSON.stringify({set: set, action: action}),
+                headers: {"Content-Type": "application/json"}
+            })
+            .then(response => response.json())
+            .then(json => {
+                if (json.error) {
+                    alert(json.error);
+                    return;
+                }
+                document.getElementById(`queue-set-${set}`).remove();
+            });
+        },
+        approve: function (set) { this.act(set, "approve")},
+        reject: function (set) { this.act(set, "reject")}
+    }
+</script>

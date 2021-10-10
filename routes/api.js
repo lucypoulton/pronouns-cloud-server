@@ -1,14 +1,11 @@
-const mysql = require("mysql2/promise");
-const config = require("../config.json")
-
 module.exports = function (app) {
 
     app.get('/api/', async (req, res) => {
         const conn = await app.pool.getConnection();
-        const [result, _] = await conn.execute("SELECT * FROM sets;");
+        const [result] = await conn.execute("SELECT * FROM sets;");
         conn.release();
 
-        res.json(result);
+        res.json(result.map(entry => entry.setName));
         res.end();
     });
 
@@ -32,8 +29,11 @@ module.exports = function (app) {
         }
 
         const conn = await app.pool.getConnection();
-        await conn.execute("INSERT IGNORE INTO moderation_queue VALUES (?, ?, ?) WHERE NOT EXISTS (SELECT setName from sets WHERE setName=?)",
-            [req.body.set, new Date(), req.body.source, req.body.set]);
+        const [exists] = await conn.execute("SELECT 1 FROM sets WHERE setName=?", [req.body.set])
+        if (!exists.length) {
+            await conn.execute("INSERT IGNORE INTO moderation_queue VALUES (?, ?, ?)",
+                [req.body.set, new Date(), req.body.source]);
+        }
         conn.release();
         res.status(204).send();
     })

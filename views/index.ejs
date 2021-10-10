@@ -1,2 +1,22 @@
-<h2>Index</h2>
-<!-- TODO - put something here -->
+<style>
+    a.large {
+        background: var(--gradient);
+        padding: 0.6em;
+        border-radius: 5px;
+        display: block;
+        margin: 1em;
+    }
+</style>
+<div class="flowbox">
+    <div>
+        <h2>ProNouns Cloud Set List</h2>
+        <span>This is a list of pronouns, crowdsourced from
+            <a href="https://lucypoulton.net/pronouns">ProNouns installations</a>.
+        Every set is automatically submitted (if enabled by the server) and manually moderated before being included in
+            this list. ProNouns automatically updates this list if enabled - alternatively, download the set below:</span>
+        <a class="large" href="/api" download="pronouns.json">Download JSON</a>
+        <% for (let set of locals.sets) { %>
+            <div><%= set %></div>
+        <% } %>
+    </div>
+</div>

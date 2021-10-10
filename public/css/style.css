@@ -43,3 +43,7 @@ button {
   background: var(--colour-light-grey);
   color: var(--colour-dark);
 }
+
+a {
+  color: white;
+}

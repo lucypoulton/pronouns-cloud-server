@@ -1,7 +1,16 @@
 const oidc = require("express-openid-connect");
 
 module.exports = function (app) {
-    app.get('/moderation/', oidc.claimIncludes("roles", "ProNouns-Approver"), async (req, res) => {
+    app.get('/moderation/', oidc.requiresAuth(), async (req, res) => {
+        if (!req.oidc.user.roles.includes("ProNouns-Approver")) {
+            res.render("error", {
+                "error": {
+                    "status": "You don't have permission to access this page.",
+                    "stack": ""
+                }
+            });
+            return;
+        }
         const conn = await app.pool.getConnection();
         const [result] = await conn.execute("SELECT * FROM moderation_queue;");
         conn.release();
@@ -15,7 +24,12 @@ module.exports = function (app) {
 
     const createError = (res, err) => res.status(400).json({error: err}).send();
 
-    app.post("/moderation/", oidc.claimIncludes("roles", "ProNouns-Approver"), async (req, res) => {
+    app.post("/moderation/", oidc.requiresAuth(), async (req, res) => {
+        if (!req.oidc.user.roles.includes("ProNouns-Approver")) {
+            res.json({error: "Unauthorized"}).status(403).send();
+            return;
+        }
+
         if (!req.body.set || !req.body.action) {
             createError(res, "Missing keys from body")
             return;

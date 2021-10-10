@@ -5,7 +5,11 @@ module.exports = function (app) {
         const [result] = await conn.execute("SELECT * FROM sets;");
         conn.release();
 
-        res.json(result.map(entry => entry.setName));
+        res.json({
+            source: "https://pn.lucypoulton.net",
+            updatedAt: new Date(),
+            sets: result.map(entry => entry.setName)
+        });
         res.end();
     });
 

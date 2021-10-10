@@ -6,11 +6,15 @@
 </head>
 <body class="bg-dark">
 <div class="header">
-    <span>ProNouns Cloud</span>
-    <% if (locals.user) { %>
-        <span class="username">Logged in as <%= locals.user.username%></span>
-    <% } %>
-    </div>
+    <span onclick="window.location='/'">ProNouns Cloud</span>
+    <span class="username">
+        <% if (locals.user) { %>
+            <%= locals.user.username %> | <a href="/moderation">Mod queue</a> | <a href="/logout">Log out</a>
+        <% } else { %>
+            <a href="/moderation">Admin login</a>
+        <% } %>
+    </span>
+</div>
 <%- body %>
 </body>
 </html>

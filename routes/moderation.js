@@ -1,6 +1,6 @@
-const oidc = require("express-openid-connect");
+import oidc from "express-openid-connect";
 
-module.exports = function (app) {
+export default function (app) {
     app.get('/moderation/', oidc.requiresAuth(), async (req, res) => {
         if (!req.oidc.user.roles.includes("ProNouns-Approver")) {
             res.render("error", {

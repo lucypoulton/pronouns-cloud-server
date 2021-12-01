@@ -11,5 +11,6 @@
     "user": "user",
     "password": "password",
     "database": "databasename"
-  }
+  },
+  "webhook": "https://discord.com/api/webhooks/put-your-webhook-here-or-leave-blank-to-disable"
 }

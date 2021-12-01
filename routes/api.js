@@ -1,4 +1,6 @@
-module.exports = function (app) {
+import webhook from "../webhook.js";
+
+export default function (app) {
 
     app.get('/api/', async (req, res) => {
         const conn = await app.pool.getConnection();
@@ -37,6 +39,7 @@ module.exports = function (app) {
         if (!exists.length) {
             await conn.execute("INSERT IGNORE INTO moderation_queue VALUES (?, ?, ?)",
                 [req.body.set, new Date(), req.body.source]);
+            await webhook.onSubmit(req.body.set, req.body.source)
         }
         conn.release();
         res.json({}).send();

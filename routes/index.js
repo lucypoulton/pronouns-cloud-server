@@ -1,4 +1,4 @@
-module.exports = function (app) {
+export default function (app) {
 
     app.get('/', async (req, res) => {
         const conn = await app.pool.getConnection();
